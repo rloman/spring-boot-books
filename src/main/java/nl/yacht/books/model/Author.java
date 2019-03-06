@@ -1,10 +1,9 @@
 package nl.yacht.books.model;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
 import java.time.LocalDate;
+import java.util.HashSet;
+import java.util.Set;
 
 @Entity
 public class Author {
@@ -15,6 +14,22 @@ public class Author {
 
     private String name;
     private LocalDate dateOfBirth;
+
+
+    @OneToMany(mappedBy = "author")
+    private Set<Book> books = new HashSet<>();
+
+
+    public void addBook(Book b) {
+        this.books.add(b);
+        b.setAuthor(this);
+    }
+
+    public Set<Book> getBooks() {
+        return books;
+    }
+
+
 
     public long getId() {
         return id;
