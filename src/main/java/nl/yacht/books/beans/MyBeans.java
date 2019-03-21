@@ -15,6 +15,4 @@ public class MyBeans {
     public Person will() {
         return new Person("Will");
     }
-
-
 }
