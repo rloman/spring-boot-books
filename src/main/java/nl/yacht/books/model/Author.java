@@ -1,5 +1,7 @@
 package nl.yacht.books.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 import javax.persistence.*;
 import java.time.LocalDate;
 import java.util.HashSet;
@@ -16,7 +18,8 @@ public class Author {
     private LocalDate dateOfBirth;
 
 
-    @OneToMany(mappedBy = "author")
+    @OneToMany(mappedBy = "author", cascade = CascadeType.PERSIST, fetch = FetchType.LAZY)
+    @JsonIgnoreProperties("author")
     private Set<Book> books = new HashSet<>();
 
 
