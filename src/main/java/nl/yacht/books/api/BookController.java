@@ -1,7 +1,8 @@
 package nl.yacht.books.api;
 
 import nl.yacht.books.model.Book;
-import nl.yacht.books.persistence.BookRepository;
+import nl.yacht.books.service.BookService;
+import nl.yacht.books.service.PersonService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -14,24 +15,35 @@ import java.util.Optional;
 public class BookController {
 
     @Autowired
-    private BookRepository bookRepository;
+    private BookService bookService;
+
+    @Autowired
+    private PersonService personService;
 
     @PostMapping
     public Book create(@RequestBody Book toBeCreated) {
-        return this.bookRepository.save(toBeCreated);
+        return this.bookService.save(toBeCreated);
     }
 
     @GetMapping
     public Iterable<Book> list() {
 
-        return this.bookRepository.findAll();
+        return this.bookService.findAll();
+
+    }
+
+    @GetMapping("team")
+    public ResponseEntity<Void> pp() {
+        this.personService.pp();
+
+        return ResponseEntity.ok().build();
 
     }
 
     @GetMapping("{id}")
     public ResponseEntity<Book> findyById(@PathVariable("id") long id) {
 
-        Optional<Book> optionalBook = this.bookRepository.findById(id);
+        Optional<Book> optionalBook = this.bookService.findById(id);
 
         if (optionalBook.isPresent()) {
             Book result = optionalBook.get();// only do get when you tested using isPresent()!!!!!!!!!!!!!
@@ -45,7 +57,7 @@ public class BookController {
     public ResponseEntity<Book> update(@PathVariable long id, @RequestBody Book in) {
 
         //first fetch the book with id: id
-        Optional<Book> optionalBook = this.bookRepository.findById(id);
+        Optional<Book> optionalBook = this.bookService.findById(id);
 
         // unwrap the optional
         if (optionalBook.isPresent()) {
@@ -59,7 +71,7 @@ public class BookController {
 
             // save out
 
-            return ResponseEntity.ok(this.bookRepository.save(out));
+            return ResponseEntity.ok(this.bookService.save(out));
 
             // return out
         } else {
@@ -70,10 +82,10 @@ public class BookController {
     @DeleteMapping("{id}")
     public ResponseEntity<Book> delete(@PathVariable long id) {
 
-        Optional<Book> optionalBook = this.bookRepository.findById(id);
+        Optional<Book> optionalBook = this.bookService.findById(id);
 
         if (optionalBook.isPresent()) {
-            this.bookRepository.deleteById(id);
+            this.bookService.deleteById(id);
             return ResponseEntity.noContent().build();
 
         } else {
